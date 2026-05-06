@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { Task, TeamMember, Status, STATUSES } from '@/types'
 import { loadTasks, saveTasks, loadMembers, saveMembers } from '@/lib/store'
 import KanbanBoard from '@/components/KanbanBoard'
@@ -9,8 +10,10 @@ import FilterBar, { Filters } from '@/components/FilterBar'
 import MembersPanel from '@/components/MembersPanel'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Home() {
+  const router = useRouter()
   const [tasks, setTasks] = useState<Task[]>([])
   const [members, setMembers] = useState<TeamMember[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -19,12 +22,24 @@ export default function Home() {
   const [filters, setFilters] = useState<Filters>({ search: '', assigneeId: null, priority: null })
   const [showMembers, setShowMembers] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
 
   useEffect(() => {
     setTasks(loadTasks())
     setMembers(loadMembers())
     setMounted(true)
+
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserEmail(user?.email ?? null)
+    })
   }, [])
+
+  async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   const filteredTasks = useMemo(() => {
     return tasks.filter(t => {
@@ -110,6 +125,9 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {userEmail && (
+              <span className="text-sm text-muted-foreground hidden sm:block">{userEmail}</span>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -120,6 +138,9 @@ export default function Home() {
             </Button>
             <Button size="sm" onClick={() => openNewTask('todo')}>
               + 새 일감
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              로그아웃
             </Button>
           </div>
         </div>

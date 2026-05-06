@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from('tasks')
-    .insert({ title, assignee_id: assignee_id ?? null, status: status ?? 'todo', created_by: user.id })
+    .insert({ title, assignee_id: assignee_id ?? user.id, status: status ?? 'todo', created_by: user.id })
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

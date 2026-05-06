@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import type { TablesUpdate } from '@/lib/database.types'
+import type { TablesUpdate } from '@/lib/supabase/database.types'
 
 type Params = { params: Promise<{ id: string }> }
 
