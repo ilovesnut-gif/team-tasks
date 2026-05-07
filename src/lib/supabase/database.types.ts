@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      comments: {
+        Row: {
+          id: string
+          task_id: string
+          body: string
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          body: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          body?: string
+          created_by?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assignee_id: string | null

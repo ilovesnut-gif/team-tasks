@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { Task, TeamMember, PRIORITIES } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function TaskCard({ task, members, onEdit, onDelete, onStatusChange }: Props) {
+  const router = useRouter()
   const assignee = members.find(m => m.id === task.assigneeId)
   const priority = PRIORITIES.find(p => p.value === task.priority)
 
@@ -54,6 +56,7 @@ export default function TaskCard({ task, members, onEdit, onDelete, onStatusChan
                 이전 단계로
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push(`/tasks/${task.id}`)}>댓글 보기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(task)}>수정</DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600"

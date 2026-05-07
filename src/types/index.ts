@@ -34,6 +34,14 @@ export const PRIORITIES: { value: Priority; label: string; color: string }[] = [
   { value: 'urgent', label: '긴급', color: 'bg-red-100 text-red-700' },
 ]
 
+export interface Comment {
+  id: string
+  task_id: string
+  body: string
+  created_by: string
+  created_at: string
+}
+
 export const DEFAULT_MEMBERS: TeamMember[] = [
   { id: 'm1', name: '김민준', color: 'bg-violet-500', initials: '김' },
   { id: 'm2', name: '이서연', color: 'bg-pink-500', initials: '이' },
