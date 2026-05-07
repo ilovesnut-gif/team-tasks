@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { buildTaskRecord } from '@/lib/buildTaskRecord'
 
 export async function GET() {
   const supabase = await createClient()
@@ -20,11 +21,12 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { title, assignee_id, status } = await request.json()
+  const body = await request.json()
+  const record = buildTaskRecord(body, user)
 
   const { data, error } = await supabase
     .from('tasks')
-    .insert({ title, assignee_id: assignee_id ?? user.id, status: status ?? 'todo', created_by: user.id })
+    .insert(record)
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
